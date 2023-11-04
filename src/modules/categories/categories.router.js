@@ -1,8 +1,10 @@
-import { Router } from 'express';
+import { Router} from 'express';
 import * as categoriesController from './categories.controller.js';
 import fileUpload, { fileValidation } from "../../services/multer.js";
+import subCategoryRouter from './../subcategory/subcategory.router.js';
 const router =Router();
 
+router.use('/:id/subcategory',subCategoryRouter)
 router.get('/',categoriesController.getCategories)
 router.get('/active',categoriesController.getActiveCategory)
 router.get('/:id',categoriesController.getSpecificCategory)
