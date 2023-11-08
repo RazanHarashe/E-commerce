@@ -4,9 +4,9 @@ import productsRouter from './products/products.router.js';
 import subcategoryRouter from './subcategory/subcategory.router.js'
 import authRouter from './auth/auth.router.js';
 import couponRouter from './coupon/coupon.router.js'
-const initApp = (app,express)=>{
+const initApp = async(app,express)=>{
     app.use(express.json());
-    connectDB();
+   connectDB();
     app.get('/',(req,res)=>{
         return res.status(200).json({message:"welcome"});
     })
