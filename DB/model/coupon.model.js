@@ -14,7 +14,7 @@ const couponSchema = new Schema({
         type: Types.ObjectId ,
          ref:'User'
     }],
-    expiredDate:Date,
+    expireDate:Date,
     
     createdBy:{type:Types.ObjectId,ref:'User'},
     updatedBy:{type:Types.ObjectId,ref:'User'},

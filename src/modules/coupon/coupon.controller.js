@@ -12,7 +12,7 @@ export const createCoupon=async(req,res)=>{
 } 
 
 export const getCoupons = async(req,res)=>{
-    const coupons= await couponModel.find({});
+    const coupons= await couponModel.find({isDeleted:false});
     return res.status(200).json({message:"success",coupons});
 }
 
@@ -22,7 +22,7 @@ export const updateCoupon = async(req,res)=>{
         return res.status(404).json('No Coupon Found');
         }
     if(req.body.name){
-        if(await couponModel.findOne({name:req.name}).select('name')){
+        if(await couponModel.findOne({name:req.body.name}).select('name')){
             return res.status(409).json({message:`copon ${req.body.name} already exists`})
         }
         coupon.name=req.body.name;
@@ -35,8 +35,8 @@ export const updateCoupon = async(req,res)=>{
 }
 export const softDelete = async (req,res) =>{
     const {id}=req.params;
-    const coupon= await couponModel.findOneAndUpdate({_id:id,isDelete:false},
-        {isDelete:true},
+    const coupon= await couponModel.findOneAndUpdate({_id:id,isDeleted:false},
+        {isDeleted:true},
         {new:true});
         if (!coupon) {
             return res.status(400).json({message:"can't delete this copon"});
@@ -46,7 +46,7 @@ export const softDelete = async (req,res) =>{
 
 export const hardDelete = async (req,res) =>{
     const {id}=req.params;
-    const coupon= await couponModel.findOneAndDelete({_id:id});
+    const coupon= await couponModel.findOneAndDelete({_id:id,isDeleted:true});
         if (!coupon) {
             return res.status(400).json({message:"can't delete this copon"});
             }
@@ -55,8 +55,8 @@ export const hardDelete = async (req,res) =>{
 
 export const restore = async (req,res) =>{
     const {id}=req.params;
-    const coupon= await couponModel.findOneAndUpdate({_id:id,isDelete:true},
-        {isDelete:false},
+    const coupon= await couponModel.findOneAndUpdate({_id:id,isDeleted:true},
+        {isDeleted:false},
         {new:true});
         if (!coupon) {
             return res.status(400).json({message:"can't restore this copon"});

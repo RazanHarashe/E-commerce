@@ -7,7 +7,7 @@ import { endPoint } from './category.endpoint.js';
 const router =Router();
 
 router.use('/:id/subcategory',subCategoryRouter)
-router.get('/',auth(endPoint.getAlls),categoriesController.getCategories)
+router.get('/',auth(endPoint.getAll),categoriesController.getCategories)
 router.get('/active',auth(endPoint.getActive),categoriesController.getActiveCategory)
 router.get('/:id',auth(endPoint.specific),categoriesController.getSpecificCategory)
 router.post('/',auth(endPoint.create),fileUpload(fileValidation.image).single('image'),
