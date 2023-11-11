@@ -4,4 +4,6 @@ import fileUpload, { fileValidation } from "../../services/multer.js";
 const router = Router();
 router.post('/signup',fileUpload(fileValidation.image).single('image'),AuthController.signUp);
 router.post('/signin',AuthController.signIn);
+router.patch('/sendCode',AuthController.sendCode)
+router.patch('/forgotPassword',AuthController.forgotPassword)
 export default router;

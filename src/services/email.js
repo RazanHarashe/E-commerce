@@ -3,13 +3,13 @@ export async function  sendEmail(to,subject,html){
 const transporter = nodemailer.createTransport({
 service:'gmail',
   auth: {
-    user: "rharashe5@gmail.com",
-    pass: "bjqx pogt pwwx qprg",
+    user: process.env.EMAILSENDER,
+    pass: process.env.PASSWORDSENDER ,
   },
 }); 
 
 const info = await transporter.sendMail({
-    from: `"Razan harashe👻" <rharashe5@gmail.com>`, // sender address
+    from: `"T-shop" <${process.env.EMAILSENDER}>`, // sender address
     to, // list of receivers
     subject, // Subject line
     html, // html body
