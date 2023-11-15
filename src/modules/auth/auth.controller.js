@@ -5,6 +5,7 @@ import  jwt  from "jsonwebtoken";
 import { sendEmail } from "../../services/email.js";
 import { customAlphabet, nanoid } from "nanoid";
 
+
 export const signUp=async(req,res)=>{
     const {userName,email,password}=req.body;
     const user = await userModel.findOne({email});
@@ -17,7 +18,8 @@ export const signUp=async(req,res)=>{
         folder:`${process.env.APP_NAME}/users`
    })
    const token = jwt.sign({ email }, process.env.EMAILTOKEN)
-   await sendEmail(email,"confirm email",`<a href='${req.protocol}://${req.headers.host}/auth/confirmEmail/${token}'>verify</a>`)
+   const link = `<a href='${req.protocol}://${req.headers.host}/auth/confirmEmail/${token}'>verify</a>`
+   await sendEmail(email,"confirm email",link)
     
     const createUser= await userModel.create({userName,email,password:hashedPassword,image:{secure_url,public_id}});
     return res.status(201).json({message:"success",createUser})

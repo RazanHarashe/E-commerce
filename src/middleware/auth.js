@@ -3,7 +3,7 @@ import userModel from "../../DB/model/user.model.js";
 
 export const roles={
     ADMIN: 'Admin',
-    USER: 'User'
+    USER: 'User',
 
 }
 export const auth=(accessRoles=[])=>{
