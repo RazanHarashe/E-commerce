@@ -6,11 +6,12 @@ import { sendEmail } from "../../services/email.js";
 import { customAlphabet, nanoid } from "nanoid";
 
 
-export const signUp=async(req,res)=>{
+export const signUp=async(req,res,next)=>{
     const {userName,email,password}=req.body;
     const user = await userModel.findOne({email});
     if (user){
-        return res.status(409).json("Email already exists");
+       // return res.status(409).json("Email already exists");
+        return next(new Error("email already exist",{cause:409}))
     }
 
     const hashedPassword=await bcrypt.hash(password,parseInt(process.env.SALT_ROUND));
@@ -58,6 +59,9 @@ export const signIn=async(req,res)=>{
     if(!user){
         return res.status(400).json({message:"data invalid"});
     }
+    if(!user.confirmEmail){
+        return res.status(400).json({message:"please verify your email"})
+    }
     const match = await bcrypt.compare(password,user.password);
     if(!match){
         return res.status(400).json({message:"data invalid"});
@@ -91,5 +95,8 @@ export const forgotPassword=async(req,res)=>{
     return res.status(200).json({message:"success"});
 }
     
-    
+export const deleteInvalidConfirm=async(req,res)=>{
+    const users=await userModel.deleteMany();
+    return res.json();
+}  
 
