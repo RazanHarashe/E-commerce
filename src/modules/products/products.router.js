@@ -3,7 +3,7 @@ import * as productController from './products.controller.js';
 import { endPoint } from "./products.endpoint.js";
 import {auth} from '../../middleware/auth.js';
 import fileUpload,{fileValidation} from '../../services/multer.js'
-
+import * as validator from '../products/products.validation.js'
 const router=Router();
 
 router.get('/',productController.getProducts)

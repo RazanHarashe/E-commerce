@@ -47,7 +47,14 @@ const userSchema = new Schema({
     sendCode:{
         type:String,
         default:null,
-    }
+    },
+    changePasswordTime:{
+        type:Date,
+    },
+    // online:{
+    //     type:Boolean,
+    //     default:false,
+    // },
 },
 {
     timestamps:true}
