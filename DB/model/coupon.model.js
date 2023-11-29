@@ -1,21 +1,13 @@
-import mongoose,{Schema,Types,model} from "mongoose";
-
+import mongoose,{Schema,model,Types} from 'mongoose' 
 const couponSchema = new Schema({
-   name:{
+    name:{
         type:String,
         required:true,
-        unique:true
+        unique:true,
     },
-    amount:{
-        type:Number,
-        required:true,
-    },
-    usedBy:[{
-        type: Types.ObjectId ,
-         ref:'User'
-    }],
-    expireDate:Date,
-    
+    amount:{type:Number,required:true},
+    usedBy:[{type:Types.ObjectId,ref:'User'}],
+    expireDate:{type:Date,required:true},
     createdBy:{type:Types.ObjectId,ref:'User'},
     updatedBy:{type:Types.ObjectId,ref:'User'},
     isDeleted:{
@@ -24,8 +16,8 @@ const couponSchema = new Schema({
     }
 },
 {
-    timestamps:true}
-    );
-
-const couponModel=mongoose.models.Coupon || model('Coupon',couponSchema);
-export default couponModel; 
+    timestamps:true,
+}
+);
+const couponModel = mongoose.models.Coupon ||  model('Coupon',couponSchema);
+export default couponModel;
