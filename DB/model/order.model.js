@@ -19,6 +19,10 @@ const orderSchema = new Schema({
         ref:'Coupon',
         requierd:true,
     },
+    couponName:{
+        type:String,
+        required:true,
+    },
     paymentType:{
         type:String, 
         default:'cash',
