@@ -16,5 +16,6 @@ router.get('/',auth(Object.values(roles)),asyncHandler(categoriesController.getC
 router.get('/active',auth(endPoint.getActive),asyncHandler(categoriesController.getActiveCategory))
 router.get('/:id',auth(endPoint.specific),validation(validators.getSpecificCategory),asyncHandler(categoriesController.getSpecificCategory))
 router.put('/:id',auth(endPoint.update),fileUpload(fileValidation.image).single('image'),asyncHandler(categoriesController.updateCategory))
+router.delete('/:categoryId',auth(endPoint.delete),asyncHandler(categoriesController.deleteCategory));
 
 export default router; 

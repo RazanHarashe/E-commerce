@@ -1,11 +1,11 @@
-const roles={
-    Admin:'Admin',User:'User'
-}
+const roles = {
+  Admin: "Admin",
+  User: "User",
+};
 
-export const endPoint ={
-    create:[roles.Admin],
-    getAll:[roles.Admin],
-    getActive:[roles.User],
-    update:[roles.Admin],
-    specific:[roles.User,roles.Admin]
-}
+export const endPoint = {
+  create: [roles.Admin],
+  getAll: [roles.Admin],
+  update: [roles.Admin],
+  delete: [roles.Admin],
+};

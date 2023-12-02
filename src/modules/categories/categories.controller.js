@@ -1,21 +1,27 @@
 import slugify from "slugify";
 import cloudinary from "../../services/cloudinary.js";
 import categoryModel from "../../../DB/model/category.model.js";
-
+import { pagination } from "../../services/pagination.js";
+import productModel from "../../../DB/model/product.model.js";
 
 export const getCategories =async (req,res)=>{
-    const categories=await categoryModel.find().populate('subcategory');
+    const{skip,limit}=pagination(req.query.page,req.query.limit)
+    const categories=await categoryModel.find().skip(skip).limit(limit).populate('subcategory');
     return res.status(200).json({message:"success",categories});
 } 
 
 export const getActiveCategory =async (req,res)=>{
-    const categories=await categoryModel.find({status:'Active'}).select('name image');
-    return res.status(200).json({message:"success",categories});
+    const{skip,limit}=pagination(req.query.page,req.query.limit)
+    const categories=await categoryModel.find({status:'Active'}).skip(skip).limit(limit).select('name image');
+    return res.status(200).json({message:"success",count:categories.length,categories});
 } 
 
-export const getSpecificCategory = async(req,res)=>{
+export const getSpecificCategory = async(req,res,next)=>{
     const {id}=req.params;
     const category=await categoryModel.findById(id);
+    if(!category){
+        return next(new Error(`category not found`,{cause:409}))
+    }
     return res.status(200).json({message:"success",category});
 } 
 
@@ -37,7 +43,7 @@ createdBy:req.user._id,updatedBy:req.user._id});
 
 } 
 
-export const updateCategory =async(req,res)=>{
+export const updateCategory =async(req,res,next)=>{
     try{
     const category=await categoryModel.findById(req.params.id);
 
@@ -47,16 +53,18 @@ export const updateCategory =async(req,res)=>{
     }
 
     if(req.body.name){
-        if(await categoryModel.findOne({name:req.body.name}).select('name')){
-            return res.status(409).json({message:`category ${req.body.name} already exist`});
+        if(await categoryModel.findOne({name:req.body.name,_id:{$ne:category._id}}).select('name')){
+           // return res.status(409).json({message:`category ${req.body.name} already exist`});
+            return next(new Error(`category ${req.body.name} already exist`,{cause:409}))
         }
         category.name=req.body.name;
         category.slug=slugify(req.body.name);
-    }
-
-    if(req.body.status){
         category.status=req.body.status;
     }
+
+    // if(req.body.status){
+    //     category.status=req.body.status;
+    // }
 
     if(req.file){
         const {secure_url,public_id}= await cloudinary.uploader.upload(req.file.path,{
@@ -73,3 +81,13 @@ export const updateCategory =async(req,res)=>{
 }
 }
 
+export const deleteCategory= async(req,res,next)=>{
+    const{categoryId}=req.params;
+    const category=await categoryModel.findByIdAndDelete(categoryId);
+    if(!category){
+        return next(new Error(`category not found`,{cause:404}))
+       
+    }
+    await productModel.deleteMany({categoryId});
+    return res.status(200).json({message:"success"})
+}
