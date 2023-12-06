@@ -17,11 +17,11 @@ const orderSchema = new Schema({
     couponId:{
         type:Types.ObjectId,
         ref:'Coupon',
-        requierd:true,
+        
     },
     couponName:{
         type:String,
-        required:true,
+       
     },
     paymentType:{
         type:String, 
