@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>User List</h1>
+    <table border="1">
+      {{#each users}}
+      <tr style="font-size: 25px;">
+        <td>{{this._id}}</td>
+        <td>{{this.userName}}</td>
+        <td>{{this.email}}</td>
+        <td>{{this.role}}</td>
+      </tr>
+      {{/each}}
+    </table>
+  </body>
+</html>

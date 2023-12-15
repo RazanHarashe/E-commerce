@@ -25,7 +25,7 @@ const initApp = async (app, express) => {
   app.get("/", (req, res) => {
     return res.status(200).json({ message: "welcome" });
   });
-  app.use(express.static("./"));
+  app.use('/userPdf',express.static("./"));
   app.use("/auth", authRouter);
   app.use("/categories", categoriesRouter);
   app.use("/products", productsRouter);
