@@ -4,6 +4,7 @@ const orderSchema = new Schema({
         type:Types.ObjectId,ref:'User',required:true,
     },
     products:[{
+        name:{type:String},
         productId:{type:Types.ObjectId,ref:'Product',required:true},
         quantity:{type:Number,default:1,required:true},
         unitPrice:{type:Number,required:true},
