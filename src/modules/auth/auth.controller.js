@@ -5,7 +5,6 @@ import  jwt  from "jsonwebtoken";
 import { sendEmail } from "../../services/email.js";
 import { customAlphabet, nanoid } from "nanoid";
 
-
 export const signUp=async(req,res,next)=>{
     const {userName,email,password}=req.body;
     const user = await userModel.findOne({email});
@@ -237,7 +236,7 @@ export const signIn=async(req,res)=>{
         return res.status(400).json({message:"data invalid"});
     }
     const token =jwt.sign({id:user._id,role:user.role,status:user.status},process.env.LOGINSECRET,
-        {expiresIn:'5m'});
+        {expiresIn:'1h'});
     
     const refreshToken =jwt.sign({id:user._id,role:user.role,status:user.status},process.env.LOGINSECRET,
         {expiresIn:60*60*24*30});

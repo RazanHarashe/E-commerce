@@ -1,6 +1,6 @@
 import { roles } from "../../middleware/auth.js";
 
-export const endPoints = {
+export const endPoint = {
   create: [roles.User],
   cancel:[roles.User],
   get:[roles.User],
