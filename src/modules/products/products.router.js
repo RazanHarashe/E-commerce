@@ -16,5 +16,5 @@ router.post('/',auth(endPoint.create),fileUpload(fileValidation.image).fields([
 ]),validation(validator.createProduct),productController.createProduct);
 
 router.get('/category/:categoryId',productController.getProductWithCategory);
-router.get(':productId',productController.getProducts);
+router.get('/:productId',productController.getProducts);
 export default router; 
