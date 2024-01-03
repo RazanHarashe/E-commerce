@@ -9,7 +9,7 @@ import { pagination } from '../../services/pagination.js';
 export const getProducts = async(req,res)=>{
     const {skip,limit} = pagination(req.query.page,req.query.limit);
     let queryObj={...req.query};
-    const execQuery=['page','limit','skip','sort','search'];
+    const execQuery=['page','limit','skip','sort','search','fields'];
     execQuery.map((ele)=>{
         delete queryObj[ele];  
     })
