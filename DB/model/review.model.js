@@ -13,7 +13,7 @@ const reviewSchema = new Schema(
       max: 5,
     },
     createdBy: {
-      type:Types.ObjectId,
+      type: Types.ObjectId,
       ref: "User",
       required: true,
     },

@@ -4,90 +4,115 @@ import categoryModel from "../../../DB/model/category.model.js";
 import { pagination } from "../../services/pagination.js";
 import productModel from "../../../DB/model/product.model.js";
 
-export const getCategories =async (req,res)=>{
-    const{skip,limit}=pagination(req.query.page,req.query.limit)
-    const categories=await categoryModel.find().skip(skip).limit(limit).populate('subcategory');
-    return res.status(200).json({message:"success",categories});
-} 
+export const getCategories = async (req, res) => {
+  const { skip, limit } = pagination(req.query.page, req.query.limit);
+  const categories = await categoryModel
+    .find()
+    .skip(skip)
+    .limit(limit)
+    .populate("subcategory");
+  return res.status(200).json({ message: "success", categories });
+};
 
-export const getActiveCategory =async (req,res)=>{
-    const{skip,limit}=pagination(req.query.page,req.query.limit)
-    const categories=await categoryModel.find({status:'Active'}).skip(skip).limit(limit).select('name image');
-    return res.status(200).json({message:"success",count:categories.length,categories});
-} 
+export const getActiveCategory = async (req, res) => {
+  const { skip, limit } = pagination(req.query.page, req.query.limit);
+  const categories = await categoryModel
+    .find({ status: "Active" })
+    .skip(skip)
+    .limit(limit)
+    .select("name image");
+  return res
+    .status(200)
+    .json({ message: "success", count: categories.length, categories });
+};
 
-export const getSpecificCategory = async(req,res,next)=>{
-    const {id}=req.params;
-    const category=await categoryModel.findById(id);
-    if(!category){
-        return next(new Error(`category not found`,{cause:409}))
+export const getSpecificCategory = async (req, res, next) => {
+  const { id } = req.params;
+  const category = await categoryModel.findById(id);
+  if (!category) {
+    return next(new Error(`category not found`, { cause: 409 }));
+  }
+  return res.status(200).json({ message: "success", category });
+};
+
+export const createCategory = async (req, res) => {
+  const name = req.body.name.toLowerCase();
+  const category = await categoryModel.findOne({ name });
+  if (category) {
+    return res.status(409).json({ message: "category name already exists" });
+  }
+
+  const { secure_url, public_id } = await cloudinary.uploader.upload(
+    req.file.path,
+    {
+      folder: `${process.env.APP_NAME}/categories`,
     }
-    return res.status(200).json({message:"success",category});
-} 
+  );
 
-export const createCategory =async(req,res)=>{
-    const name=req.body.name.toLowerCase();
-    const category=await categoryModel.findOne({name});
-    if(category){
-        return res.status(409).json({message:"category name already exists"});
+  const cat = await categoryModel.create({
+    name,
+    slug: slugify(name),
+    image: { secure_url, public_id },
+    createdBy: req.user._id,
+    updatedBy: req.user._id,
+  });
+  return res.status(201).json({ message: "success", cat });
+};
 
-    }
-    
-    const {secure_url,public_id}= await cloudinary.uploader.upload(req.file.path,{
-        folder:`${process.env.APP_NAME}/categories`
-   })
-   
-   const cat=await categoryModel.create({name,slug:slugify(name),image:{secure_url,public_id},
-createdBy:req.user._id,updatedBy:req.user._id});
-   return res.status(201).json({message:"success",cat});
+export const updateCategory = async (req, res, next) => {
+  try {
+    const category = await categoryModel.findById(req.params.id);
 
-} 
-
-export const updateCategory =async(req,res,next)=>{
-    try{
-    const category=await categoryModel.findById(req.params.id);
-
-    if(!category){
-        return res.status(404).json({message:`invalid category id ${req.params.id}`}) ;
-
+    if (!category) {
+      return res
+        .status(404)
+        .json({ message: `invalid category id ${req.params.id}` });
     }
 
-    if(req.body.name){
-        if(await categoryModel.findOne({name:req.body.name,_id:{$ne:category._id}}).select('name')){
-           // return res.status(409).json({message:`category ${req.body.name} already exist`});
-            return next(new Error(`category ${req.body.name} already exist`,{cause:409}))
-        }
-        category.name=req.body.name;
-        category.slug=slugify(req.body.name);
-        category.status=req.body.status;
+    if (req.body.name) {
+      if (
+        await categoryModel
+          .findOne({ name: req.body.name, _id: { $ne: category._id } })
+          .select("name")
+      ) {
+        // return res.status(409).json({message:`category ${req.body.name} already exist`});
+        return next(
+          new Error(`category ${req.body.name} already exist`, { cause: 409 })
+        );
+      }
+      category.name = req.body.name;
+      category.slug = slugify(req.body.name);
+      category.status = req.body.status;
     }
 
     // if(req.body.status){
     //     category.status=req.body.status;
     // }
 
-    if(req.file){
-        const {secure_url,public_id}= await cloudinary.uploader.upload(req.file.path,{
-            folder:`${process.env.APP_NAME}/categories`
-        })
-        await cloudinary.uploader.destroy(category.image.public_id);
-        category.image={secure_url,public_id};
+    if (req.file) {
+      const { secure_url, public_id } = await cloudinary.uploader.upload(
+        req.file.path,
+        {
+          folder: `${process.env.APP_NAME}/categories`,
+        }
+      );
+      await cloudinary.uploader.destroy(category.image.public_id);
+      category.image = { secure_url, public_id };
     }
-    category.updatedBy=req.user._id;
+    category.updatedBy = req.user._id;
     await category.save();
-    return res.status(200).json({message:"success"});
-}catch(err){
-    return res.status(500).json({message:"error",err:err})
-}
-}
+    return res.status(200).json({ message: "success" });
+  } catch (err) {
+    return res.status(500).json({ message: "error", err: err });
+  }
+};
 
-export const deleteCategory= async(req,res,next)=>{
-    const{categoryId}=req.params;
-    const category=await categoryModel.findByIdAndDelete(categoryId);
-    if(!category){
-        return next(new Error(`category not found`,{cause:404}))
-       
-    }
-    await productModel.deleteMany({categoryId});
-    return res.status(200).json({message:"success"})
-}
+export const deleteCategory = async (req, res, next) => {
+  const { categoryId } = req.params;
+  const category = await categoryModel.findByIdAndDelete(categoryId);
+  if (!category) {
+    return next(new Error(`category not found`, { cause: 404 }));
+  }
+  await productModel.deleteMany({ categoryId });
+  return res.status(200).json({ message: "success" });
+};

@@ -3,7 +3,7 @@ import reviewModel from "../../../DB/model/review.model.js";
 
 export const create = async (req, res, next) => {
   const { productId } = req.params;
-  const {Comment,rating}=req.body;
+  const { Comment, rating } = req.body;
 
   const order = await orderModel.findOne({
     userId: req.user._id,
@@ -28,8 +28,8 @@ export const create = async (req, res, next) => {
     productId: productId,
   });
 
-  if(!review){
-    return next(new Error("Error in creating Review",{cause:400}));
+  if (!review) {
+    return next(new Error("Error in creating Review", { cause: 400 }));
   }
-  return res.status(201).json({message:"success",review});
+  return res.status(201).json({ message: "success", review });
 };

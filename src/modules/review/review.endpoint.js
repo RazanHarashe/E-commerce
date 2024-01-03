@@ -1,4 +1,4 @@
-import { roles } from "../../middleware/auth.js"
-export const endPoint ={
-    create:[roles.User]
-}
+import { roles } from "../../middleware/auth.js";
+export const endPoint = {
+  create: [roles.User],
+};

@@ -1,14 +1,14 @@
-import { Router } from 'express';
-import * as subCategoriesController from './subcategory.controller.js';
+import { Router } from "express";
+import * as subCategoriesController from "./subcategory.controller.js";
 import fileUpload, { fileValidation } from "../../services/multer.js";
-const router =Router({mergeParams:true});
+const router = Router({ mergeParams: true });
 
-router.post('/',fileUpload(fileValidation.image).single('image'),
-subCategoriesController.createSubCategory)
+router.post(
+  "/",
+  fileUpload(fileValidation.image).single("image"),
+  subCategoriesController.createSubCategory
+);
 
-router.get('/',subCategoriesController.getSubCategories)
+router.get("/", subCategoriesController.getSubCategories);
 
-
-
-
-export default router; 
+export default router;

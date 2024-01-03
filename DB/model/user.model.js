@@ -1,64 +1,66 @@
-import mongoose,{Schema,model} from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 
-const userSchema = new Schema({
-    userName:{
-        type:String,
-        required:true,
-        min:4,
-        max:20
-    }, 
-    email:{
-        type:String,
-        required:true,
-        unique:true
+const userSchema = new Schema(
+  {
+    userName: {
+      type: String,
+      required: true,
+      min: 4,
+      max: 20,
     },
-    password:{
-        type:String,
-        required:true,
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    image:{
-        type:Object,
-       // required:true,
+    password: {
+      type: String,
+      required: true,
     },
-    phone:{
-        type:String,
+    image: {
+      type: Object,
+      // required:true,
     },
-    address:{
-        type:String,
+    phone: {
+      type: String,
     },
-    confirmEmail:{
-        type:Boolean,
-        default:false,
+    address: {
+      type: String,
     },
-    gender:{
-        type:String,
-        enum:['Male','Female'],
+    confirmEmail: {
+      type: Boolean,
+      default: false,
     },
-    status:{
-        type:String,
-        default:'Active',
-        enum:['Active','Inactive']
+    gender: {
+      type: String,
+      enum: ["Male", "Female"],
     },
-    role:{
-        type:String,
-        default:'User',
-        enum:['User','Admin']
+    status: {
+      type: String,
+      default: "Active",
+      enum: ["Active", "Inactive"],
     },
-    sendCode:{
-        type:String,
-        default:null,
+    role: {
+      type: String,
+      default: "User",
+      enum: ["User", "Admin"],
     },
-    changePasswordTime:{
-        type:Date,
+    sendCode: {
+      type: String,
+      default: null,
+    },
+    changePasswordTime: {
+      type: Date,
     },
     // online:{
     //     type:Boolean,
     //     default:false,
     // },
-},
-{
-    timestamps:true}
-    );
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const userModel=mongoose.models.User || model('User',userSchema);
+const userModel = mongoose.models.User || model("User", userSchema);
 export default userModel;
